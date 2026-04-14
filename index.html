@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Handoo ROI - IA Inmobiliaria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: white; }
+        .card-bg { background-color: #1e293b; border: 1px solid #334155; }
+        .input-dark { background-color: #0f172a; border: 1px solid #334155; color: white; }
+        input[type="range"] { accent-color: #3b82f6; }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex items-center justify-center min-h-screen">
+
+    <div class="max-w-4xl w-full card-bg rounded-3xl p-6 shadow-2xl">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <h1 class="text-xl font-bold">Handoo: ROI de IA Inmobiliaria</h1>
+            <div class="flex gap-8 text-xs font-semibold uppercase tracking-wider text-slate-400">
+                <div class="text-center">
+                    <p>ROI TOTAL</p>
+                    <p class="text-white text-lg" id="roi-total-header">$ 0</p>
+                </div>
+                <div class="text-center">
+                    <p>MRR ESTABILIZADO</p>
+                    <p class="text-white text-lg" id="mrr-header">$ 0</p>
+                </div>
+                <div class="text-center">
+                    <p>MARGEN</p>
+                    <p class="text-white text-lg" id="margen-header">0%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div class="card-bg rounded-2xl p-6 relative overflow-hidden">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-emerald-500/20 rounded-lg">
+                        <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                    </div>
+                    <span class="text-slate-400 text-sm">Ingreso por Ventas (Mes)</span>
+                </div>
+                <div class="flex justify-between items-end">
+                    <h2 class="text-2xl font-bold" id="card-ventas-cop">$ 0</h2>
+                    <span class="text-slate-500 text-xs font-mono" id="card-ventas-usd">≈ $0 USD</span>
+                </div>
+            </div>
+
+            <div class="card-bg rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-blue-500/20 rounded-lg">
+                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <span class="text-slate-400 text-sm">MRR Alquileres (Mes <span class="mes-label">12</span>)</span>
+                </div>
+                <div class="flex justify-between items-end">
+                    <h2 class="text-2xl font-bold" id="card-mrr-cop">$ 0</h2>
+                    <span class="text-slate-500 text-xs font-mono" id="card-mrr-usd">≈ $0 USD</span>
+                </div>
+            </div>
+
+            <div class="card-bg rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-rose-500/20 rounded-lg">
+                        <svg class="w-6 h-6 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <span class="text-slate-400 text-sm">Costos Operativos</span>
+                </div>
+                <div class="flex justify-between items-end">
+                    <h2 class="text-2xl font-bold text-slate-200" id="card-costos-cop">$ 0</h2>
+                    <span class="text-slate-500 text-xs font-mono" id="card-costos-usd">≈ $0 USD</span>
+                </div>
+            </div>
+
+            <div class="card-bg rounded-2xl p-6">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="p-2 bg-emerald-500/20 rounded-lg">
+                        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </div>
+                    <span class="text-slate-400 text-sm">Ganancia Neta Estimada</span>
+                </div>
+                <div class="flex justify-between items-end">
+                    <h2 class="text-2xl font-bold text-emerald-400" id="card-ganancia-cop">$ 0</h2>
+                    <span class="text-slate-500 text-xs font-mono" id="card-ganancia-usd">≈ $0 USD</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-8 p-4 bg-slate-900/50 rounded-2xl border border-slate-800">
+            <canvas id="mainChart" height="120"></canvas>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label>Leads (Escaneos QR/Mes)</label>
+                        <span class="input-dark px-2 rounded" id="leads-val">500</span>
+                    </div>
+                    <input type="range" id="leads" min="50" max="5000" step="50" value="500" class="w-full">
+                </div>
+                <div>
+                    <label class="block mb-2">Precio Prom. Venta (COP)</label>
+                    <input type="number" id="precioVenta" value="350000000" class="w-full p-2 rounded-lg input-dark outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block mb-2">Precio Prom. Alquiler (COP)</label>
+                    <input type="number" id="precioAlquiler" value="2500000" class="w-full p-2 rounded-lg input-dark outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label>Conv. Venta (%)</label>
+                        <span class="input-dark px-2 rounded" id="cv-val">1</span>
+                    </div>
+                    <input type="range" id="convVenta" min="0.1" max="10" step="0.1" value="1" class="w-full">
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label>Conv. Alquiler (%)</label>
+                        <span class="input-dark px-2 rounded" id="ca-val">4</span>
+                    </div>
+                    <input type="range" id="convAlquiler" min="0.1" max="20" step="0.1" value="4" class="w-full">
+                </div>
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label>Meses de Operación</label>
+                        <span class="input-dark px-2 rounded" id="meses-val">12</span>
+                    </div>
+                    <input type="range" id="meses" min="1" max="24" step="1" value="12" class="w-full">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const TRM = 4100;
+        let chart;
+
+        function formatCOP(val) {
+            return '$ ' + Math.floor(val).toLocaleString('es-CO');
+        }
+
+        function update() {
+            const leads = parseInt(document.getElementById('leads').value);
+            const pVenta = parseFloat(document.getElementById('precioVenta').value);
+            const pAlquiler = parseFloat(document.getElementById('precioAlquiler').value);
+            const cVenta = parseFloat(document.getElementById('convVenta').value) / 100;
+            const cAlquiler = parseFloat(document.getElementById('convAlquiler').value) / 100;
+            const meses = parseInt(document.getElementById('meses').value);
+
+            document.getElementById('leads-val').innerText = leads;
+            document.getElementById('cv-val').innerText = (cVenta * 100).toFixed(1);
+            document.getElementById('ca-val').innerText = (cAlquiler * 100).toFixed(1);
+            document.getElementById('meses-val').innerText = meses;
+            document.querySelectorAll('.mes-label').forEach(el => el.innerText = meses);
+
+            // CÁLCULOS (Según modelo de la foto)
+            const ingresoVentasMes = leads * cVenta * pVenta * 0.03; // 3% Comisión
+            const contratosNuevosMes = leads * cAlquiler;
+            const mrrFinal = (contratosNuevosMes * meses) * pAlquiler * 0.05; // 5% Comisión Mensual
+            
+            const costosFijosUSD = 50; 
+            const costoIA_USD = leads * 0.005;
+            const costosTotalesCOP = (costosFijosUSD + costoIA_USD) * TRM;
+
+            const gananciaNeta = (ingresoVentasMes + mrrFinal) - costosTotalesCOP;
+            const margen = (gananciaNeta / (ingresoVentasMes + mrrFinal)) * 100;
+
+            // RENDER CARDS
+            document.getElementById('roi-total-header').innerText = formatCOP(gananciaNeta);
+            document.getElementById('mrr-header').innerText = formatCOP(mrrFinal);
+            document.getElementById('margen-header').innerText = margen.toFixed(1) + '%';
+
+            document.getElementById('card-ventas-cop').innerText = formatCOP(ingresoVentasMes);
+            document.getElementById('card-ventas-usd').innerText = `≈ $${Math.floor(ingresoVentasMes/TRM).toLocaleString()} USD`;
+            
+            document.getElementById('card-mrr-cop').innerText = formatCOP(mrrFinal);
+            document.getElementById('card-mrr-usd').innerText = `≈ $${Math.floor(mrrFinal/TRM).toLocaleString()} USD`;
+
+            document.getElementById('card-costos-cop').innerText = formatCOP(costosTotalesCOP);
+            document.getElementById('card-costos-usd').innerText = `≈ $${Math.floor(costosTotalesCOP/TRM).toLocaleString()} USD`;
+
+            document.getElementById('card-ganancia-cop').innerText = formatCOP(gananciaNeta);
+            document.getElementById('card-ganancia-usd').innerText = `≈ $${Math.floor(gananciaNeta/TRM).toLocaleString()} USD`;
+
+            updateChart(meses, leads, cVenta, pVenta, cAlquiler, pAlquiler, costosTotalesCOP);
+        }
+
+        function updateChart(meses, leads, cVenta, pVenta, cAlquiler, pAlquiler, costos) {
+            const labels = Array.from({length: meses}, (_, i) => i + 1);
+            const dataVentas = labels.map(() => leads * cVenta * pVenta * 0.03);
+            const dataAlquiler = labels.map((m) => (leads * cAlquiler * m) * pAlquiler * 0.05);
+            const dataNeto = labels.map((m, i) => (dataVentas[i] + dataAlquiler[i]) - costos);
+
+            if (chart) chart.destroy();
+
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels.map(m => 'Mes ' + m),
+                    datasets: [
+                        { label: 'Ventas (Mensual)', data: dataVentas, borderColor: '#10b981', borderWidth: 2, pointRadius: 0, tension: 0.1 },
+                        { label: 'MRR Alquiler (Acumulado)', data: dataAlquiler, borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0, tension: 0.1 },
+                        { label: 'Ganancia Neta', data: dataNeto, borderColor: '#a7f3d0', borderWidth: 3, pointRadius: 0, tension: 0.1 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: true, labels: { color: '#94a3b8', boxWidth: 10, font: { size: 10 } } } },
+                    scales: {
+                        y: { grid: { color: '#334155' }, ticks: { color: '#64748b', font: { size: 10 }, callback: v => '$' + v/1e6 + 'M' } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        document.querySelectorAll('input').forEach(el => el.addEventListener('input', update));
+        update();
+    </script>
+</body>
+</html>
