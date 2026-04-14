@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Handoo ROI - Modelo Híbrido Final</title>
+    <title>Handoo ROI - Balance Real</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -14,92 +14,105 @@
         input[type="range"] { accent-color: #3b82f6; cursor: pointer; }
     </style>
 </head>
-<body class="p-4 md:p-8 flex items-center justify-center min-h-screen">
+<body class="p-4 md:p-8 flex flex-col items-center justify-center min-h-screen">
 
-    <div class="max-w-5xl w-full card-bg rounded-3xl p-6 shadow-2xl border border-slate-700/50">
-        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+    <div class="max-w-6xl w-full card-bg rounded-3xl p-6 shadow-2xl border border-slate-700/50">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div>
-                <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">Handoo: Simulador de Negocio</h1>
-                <p class="text-xs text-slate-400 uppercase tracking-widest">Venta vs. Alquiler (Variables Independientes)</p>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">Handoo: Balance Financiero</h1>
+                <p class="text-xs text-slate-400 uppercase tracking-widest">Utilidad Neta: Ingresos - Costos</p>
             </div>
-            <div class="flex gap-8 text-xs font-semibold text-slate-400">
-                <div class="text-center">
-                    <p>UTILIDAD TOTAL (MES X)</p>
-                    <p class="text-emerald-400 text-xl font-bold" id="roi-total-header">$ 0</p>
+            <div class="flex justify-between md:justify-end gap-8 border-l border-slate-700 md:pl-8">
+                <div class="text-right">
+                    <p class="text-slate-400 text-[10px] font-bold uppercase">Ganancia Mes <span id="label-mes-actual">12</span></p>
+                    <p class="text-white text-xl font-bold" id="ganancia-mensual-val">$ 0</p>
+                </div>
+                <div class="text-right">
+                    <p class="text-emerald-400 text-[10px] font-bold uppercase">Ganancia Total Acumulada</p>
+                    <p class="text-emerald-400 text-2xl font-bold" id="ganancia-total-val">$ 0</p>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="card-bg rounded-2xl p-6 border-l-4 border-l-emerald-500 bg-slate-800/40">
-                <p class="text-slate-400 text-sm font-semibold mb-1">Ingreso Ventas (Mes)</p>
-                <h2 class="text-2xl font-bold" id="card-ventas-cop">$ 0</h2>
-                <p class="text-slate-500 text-xs mt-1" id="card-ventas-count">0 ventas estimadas</p>
-            </div>
-
-            <div class="card-bg rounded-2xl p-6 border-l-4 border-l-blue-500 bg-slate-800/40">
-                <p class="text-slate-400 text-sm font-semibold mb-1">MRR Alquiler (Acumulado)</p>
-                <h2 class="text-2xl font-bold" id="card-mrr-cop">$ 0</h2>
-                <p class="text-slate-500 text-xs mt-1" id="card-mrr-count">0 contratos activos</p>
-            </div>
-        </div>
-
         <div class="mb-8 p-4 bg-slate-900/50 rounded-2xl border border-slate-800">
-            <canvas id="mainChart" height="100"></canvas>
+            <canvas id="mainChart" height="90"></canvas>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-sm">
             
             <div class="space-y-4">
-                <h3 class="text-emerald-500 font-bold uppercase text-[10px] tracking-widest">Tráfico y Tiempo</h3>
+                <h3 class="text-blue-400 font-bold uppercase text-[10px] tracking-widest border-b border-slate-700 pb-1">Operación</h3>
                 <div>
-                    <div class="flex justify-between mb-1">
-                        <label>Escaneos QR / Mes</label>
+                    <div class="flex justify-between mb-1 text-xs">
+                        <label>Leads / Mes</label>
                         <span class="font-bold text-blue-400" id="leads-val">500</span>
                     </div>
                     <input type="range" id="leads" min="50" max="5000" step="50" value="500" class="w-full">
                 </div>
                 <div>
-                    <div class="flex justify-between mb-1">
-                        <label>Proyección (Meses)</label>
+                    <div class="flex justify-between mb-1 text-xs">
+                        <label>Mes de Proyección</label>
                         <span class="font-bold text-slate-200" id="meses-val">12</span>
                     </div>
-                    <input type="range" id="meses" min="1" max="24" step="1" value="12" class="w-full">
+                    <input type="range" id="meses" min="1" max="36" step="1" value="12" class="w-full">
+                </div>
+            </div>
+
+            <div class="space-y-3">
+                <h3 class="text-emerald-400 font-bold uppercase text-[10px] tracking-widest border-b border-slate-700 pb-1">Comercial</h3>
+                <input type="number" id="precioVenta" value="350000000" class="w-full p-2 rounded input-dark text-xs" title="Precio Venta">
+                <input type="number" id="precioAlquiler" value="2500000" class="w-full p-2 rounded input-dark text-xs" title="Canon Alquiler">
+                <div class="grid grid-cols-2 gap-2 mt-2">
+                    <div>
+                        <label class="text-[9px] text-slate-500 uppercase">Gano Venta %</label>
+                        <input type="number" id="tasaVenta" value="4.0" step="0.5" class="w-full p-1.5 rounded input-dark text-xs">
+                    </div>
+                    <div>
+                        <label class="text-[9px] text-slate-500 uppercase">Gano Alquiler %</label>
+                        <input type="number" id="tasaAlquiler" value="0.5" step="0.1" class="w-full p-1.5 rounded input-dark text-xs">
+                    </div>
                 </div>
             </div>
 
             <div class="space-y-4">
-                <h3 class="text-emerald-500 font-bold uppercase text-[10px] tracking-widest">Precios de Propiedad</h3>
+                <h3 class="text-purple-400 font-bold uppercase text-[10px] tracking-widest border-b border-slate-700 pb-1">Conversión %</h3>
                 <div>
-                    <label class="block mb-1 text-slate-400">Precio Venta Promedio (COP)</label>
-                    <input type="number" id="precioVenta" value="350000000" class="w-full p-2 rounded-lg input-dark outline-none focus:ring-1 focus:ring-emerald-500">
-                </div>
-                <div>
-                    <label class="block mb-1 text-slate-400">Canon Alquiler Mensual (COP)</label>
-                    <input type="number" id="precioAlquiler" value="2500000" class="w-full p-2 rounded-lg input-dark outline-none focus:ring-1 focus:ring-blue-500">
-                </div>
-            </div>
-
-            <div class="space-y-4 bg-slate-800/30 p-4 rounded-xl border border-slate-700/50">
-                <h3 class="text-emerald-500 font-bold uppercase text-[10px] tracking-widest">Tasas de Captación</h3>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block mb-1 text-[10px] text-slate-500">Conv. Venta %</label>
-                        <input type="number" id="convVenta" value="1" step="0.1" class="w-full p-2 rounded-lg input-dark text-xs">
-                        <label class="block mt-2 mb-1 text-[10px] text-emerald-500">Gano Venta %</label>
-                        <input type="number" id="tasaVenta" value="4.0" step="0.5" class="w-full p-2 rounded-lg input-dark text-xs">
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs">Cierre Ventas %</label>
+                        <input type="number" id="convVenta" value="1.0" step="0.1" class="w-20 p-1 rounded input-dark text-xs text-center">
                     </div>
-                    <div>
-                        <label class="block mb-1 text-[10px] text-slate-500">Conv. Alquiler %</label>
-                        <input type="number" id="convAlquiler" value="4" step="0.1" class="w-full p-2 rounded-lg input-dark text-xs">
-                        <label class="block mt-2 mb-1 text-[10px] text-blue-500">Gano Alquiler %</label>
-                        <input type="number" id="tasaAlquiler" value="0.5" step="0.1" class="w-full p-2 rounded-lg input-dark text-xs">
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs">Cierre Alquiler %</label>
+                        <input type="number" id="convAlquiler" value="4.0" step="0.1" class="w-20 p-1 rounded input-dark text-xs text-center">
                     </div>
                 </div>
             </div>
 
+            <div class="space-y-4 bg-rose-900/10 p-4 rounded-xl border border-rose-500/20">
+                <h3 class="text-rose-400 font-bold uppercase text-[10px] tracking-widest border-b border-rose-900 pb-1">Costos USD</h3>
+                <div>
+                    <div class="flex justify-between mb-1 text-xs">
+                        <label>Fijo Mensual</label>
+                        <span class="text-rose-400 font-bold">$<span id="fijo-val">50</span></span>
+                    </div>
+                    <input type="range" id="costoFijoUSD" min="0" max="1000" step="50" value="50" class="w-full">
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1 text-xs">
+                        <label>Variable/Lead</label>
+                        <span class="text-rose-400 font-bold">$<span id="var-val">0.01</span></span>
+                    </div>
+                    <input type="range" id="costoVarUSD" min="0.01" max="0.20" step="0.01" value="0.01" class="w-full">
+                </div>
+            </div>
         </div>
     </div>
+
+    <footer class="mt-8 text-center text-slate-500 text-[10px] uppercase tracking-[0.2em] font-semibold">
+        <p>&copy; 2026 Handoo AI · <span class="text-slate-400">Desarrollado por Miguel Riveros</span></p>
+    </footer>
 
     <script>
         const TRM = 4100;
@@ -111,64 +124,70 @@
 
         function update() {
             const leads = parseInt(document.getElementById('leads').value);
-            const meses = parseInt(document.getElementById('meses').value);
-            
-            // PRECIOS INDEPENDIENTES
+            const mesesTotal = parseInt(document.getElementById('meses').value);
             const pVenta = parseFloat(document.getElementById('precioVenta').value);
             const pAlquiler = parseFloat(document.getElementById('precioAlquiler').value);
-            
-            // CONVERSIONES
             const cVenta = parseFloat(document.getElementById('convVenta').value) / 100;
             const cAlquiler = parseFloat(document.getElementById('convAlquiler').value) / 100;
-
-            // TASAS DE GANANCIA
             const tVenta = parseFloat(document.getElementById('tasaVenta').value) / 100;
             const tAlquiler = parseFloat(document.getElementById('tasaAlquiler').value) / 100;
+            const cFijoUSD = parseFloat(document.getElementById('costoFijoUSD').value);
+            const cVarUSD = parseFloat(document.getElementById('costoVarUSD').value);
 
             document.getElementById('leads-val').innerText = leads;
-            document.getElementById('meses-val').innerText = meses;
+            document.getElementById('meses-val').innerText = mesesTotal;
+            document.getElementById('label-mes-actual').innerText = mesesTotal;
+            document.getElementById('fijo-val').innerText = cFijoUSD;
+            document.getElementById('var-val').innerText = cVarUSD.toFixed(2);
 
-            // Lógica Ventas
-            const numVentas = leads * cVenta;
-            const ingresoVentasCOP = numVentas * pVenta * tVenta;
+            let acumuladoUtilidad = 0;
+            let gananciaMesActual = 0;
+            const labels = [];
+            const dataVentas = [];
+            const dataAlquiler = [];
+            const dataCostos = [];
+            const dataUtilidadNeta = [];
 
-            // Lógica Alquiler (MRR)
-            const numContratosNuevos = leads * cAlquiler;
-            const totalContratos = numContratosNuevos * meses;
-            const mrrFinalCOP = totalContratos * pAlquiler * tAlquiler;
+            const costoMensual = (cFijoUSD + (leads * cVarUSD)) * TRM;
 
-            // Utilidad
-            const costosCOP = (50 + (leads * 0.005)) * TRM;
-            const utilidadFinal = (ingresoVentasCOP + mrrFinalCOP) - costosCOP;
+            for (let i = 1; i <= mesesTotal; i++) {
+                labels.push('Mes ' + i);
+                const ingresoVentaMes = (leads * cVenta) * pVenta * tVenta;
+                const ingresoAlquilerMes = (leads * cAlquiler * i) * pAlquiler * tAlquiler;
+                const utilidadMes = (ingresoVentaMes + ingresoAlquilerMes) - costoMensual;
 
-            // UI
-            document.getElementById('roi-total-header').innerText = formatCOP(utilidadFinal);
-            document.getElementById('card-ventas-cop').innerText = formatCOP(ingresoVentasCOP);
-            document.getElementById('card-ventas-count').innerText = `${numVentas.toFixed(1)} ventas este mes`;
-            document.getElementById('card-mrr-cop').innerText = formatCOP(mrrFinalCOP);
-            document.getElementById('card-mrr-count').innerText = `${Math.floor(totalContratos)} inquilinos activos (Mes ${meses})`;
+                acumuladoUtilidad += utilidadMes;
+                if (i === mesesTotal) gananciaMesActual = utilidadMes;
 
-            updateChart(meses, leads, cVenta, pVenta, tVenta, cAlquiler, pAlquiler, tAlquiler, costosCOP);
+                dataVentas.push(ingresoVentaMes);
+                dataAlquiler.push(ingresoAlquilerMes);
+                dataCostos.push(costoMensual);
+                dataUtilidadNeta.push(utilidadMes);
+            }
+
+            document.getElementById('ganancia-mensual-val').innerText = formatCOP(gananciaMesActual);
+            document.getElementById('ganancia-total-val').innerText = formatCOP(acumuladoUtilidad);
+
+            updateChart(labels, dataVentas, dataAlquiler, dataCostos, dataUtilidadNeta);
         }
 
-        function updateChart(meses, leads, cV, pV, tV, cA, pA, tA, costos) {
-            const labels = Array.from({length: meses}, (_, i) => i + 1);
-            const dataVentas = labels.map(() => (leads * cV) * pV * tV);
-            const dataAlquiler = labels.map((m) => (leads * cA * m) * pA * tA);
-
+        function updateChart(labels, ventas, alquiler, costos, utilidad) {
             if (chart) chart.destroy();
-            chart = new Chart(document.getElementById('mainChart').getContext('2d'), {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels.map(m => 'Mes ' + m),
+                    labels: labels,
                     datasets: [
-                        { label: 'Ingreso Venta', data: dataVentas, borderColor: '#10b981', tension: 0.3, pointRadius: 0 },
-                        { label: 'Ingreso Alquiler (Acumulado)', data: dataAlquiler, borderColor: '#3b82f6', tension: 0.3, pointRadius: 0 }
+                        { label: 'Utilidad Neta (Ganancia)', data: utilidad, borderColor: '#10b981', borderWidth: 4, pointRadius: 2, fill: true, backgroundColor: 'rgba(16, 185, 129, 0.1)' },
+                        { label: 'Ingreso Ventas', data: ventas, borderColor: '#94a3b8', borderWidth: 1, borderDash: [5,5], pointRadius: 0 },
+                        { label: 'Ingreso Alquiler', data: alquiler, borderColor: '#3b82f6', borderWidth: 1, borderDash: [5,5], pointRadius: 0 },
+                        { label: 'Costos Totales', data: costos, borderColor: '#f43f5e', borderWidth: 1, pointRadius: 0 }
                     ]
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { labels: { color: '#94a3b8' } } },
+                    plugins: { legend: { labels: { color: '#94a3b8', font: { size: 10 } } } },
                     scales: {
                         y: { grid: { color: '#334155' }, ticks: { color: '#64748b', callback: v => '$' + v/1e6 + 'M' } },
                         x: { grid: { display: false }, ticks: { color: '#64748b' } }
