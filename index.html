@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Handoo ROI - Comisiones Dinámicas</title>
+    <title>Handoo ROI - Modelo Híbrido Final</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -19,36 +19,28 @@
     <div class="max-w-5xl w-full card-bg rounded-3xl p-6 shadow-2xl border border-slate-700/50">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
             <div>
-                <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Handoo: ROI Configurable</h1>
-                <p class="text-xs text-slate-400">Ajusta las tasas de ganancia para cada modelo</p>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-400 bg-clip-text text-transparent">Handoo: Simulador de Negocio</h1>
+                <p class="text-xs text-slate-400 uppercase tracking-widest">Venta vs. Alquiler (Variables Independientes)</p>
             </div>
-            <div class="flex gap-8 text-xs font-semibold uppercase tracking-wider text-slate-400">
+            <div class="flex gap-8 text-xs font-semibold text-slate-400">
                 <div class="text-center">
-                    <p>UTILIDAD TOTAL</p>
+                    <p>UTILIDAD TOTAL (MES X)</p>
                     <p class="text-emerald-400 text-xl font-bold" id="roi-total-header">$ 0</p>
-                </div>
-                <div class="text-center">
-                    <p>MARGEN NETA</p>
-                    <p class="text-white text-xl font-bold" id="margen-header">0%</p>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="card-bg rounded-2xl p-6 border-l-4 border-l-emerald-500 bg-slate-800/50">
-                <p class="text-slate-400 text-sm font-semibold mb-1">Ventas (Comisión <span id="label-pct-v">4</span>%)</p>
-                <div class="flex justify-between items-end">
-                    <h2 class="text-2xl font-bold" id="card-ventas-cop">$ 0</h2>
-                    <span class="text-slate-500 text-xs font-mono" id="card-ventas-usd">≈ $0 USD</span>
-                </div>
+            <div class="card-bg rounded-2xl p-6 border-l-4 border-l-emerald-500 bg-slate-800/40">
+                <p class="text-slate-400 text-sm font-semibold mb-1">Ingreso Ventas (Mes)</p>
+                <h2 class="text-2xl font-bold" id="card-ventas-cop">$ 0</h2>
+                <p class="text-slate-500 text-xs mt-1" id="card-ventas-count">0 ventas estimadas</p>
             </div>
 
-            <div class="card-bg rounded-2xl p-6 border-l-4 border-l-blue-500 bg-slate-800/50">
-                <p class="text-slate-400 text-sm font-semibold mb-1">Alquiler (MRR <span id="label-pct-a">0.5</span>%)</p>
-                <div class="flex justify-between items-end">
-                    <h2 class="text-2xl font-bold" id="card-mrr-cop">$ 0</h2>
-                    <span class="text-slate-500 text-xs font-mono" id="card-mrr-usd">≈ $0 USD</span>
-                </div>
+            <div class="card-bg rounded-2xl p-6 border-l-4 border-l-blue-500 bg-slate-800/40">
+                <p class="text-slate-400 text-sm font-semibold mb-1">MRR Alquiler (Acumulado)</p>
+                <h2 class="text-2xl font-bold" id="card-mrr-cop">$ 0</h2>
+                <p class="text-slate-500 text-xs mt-1" id="card-mrr-count">0 contratos activos</p>
             </div>
         </div>
 
@@ -57,57 +49,55 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
-            <div class="space-y-6">
+            
+            <div class="space-y-4">
+                <h3 class="text-emerald-500 font-bold uppercase text-[10px] tracking-widest">Tráfico y Tiempo</h3>
                 <div>
-                    <div class="flex justify-between mb-2">
-                        <label class="text-slate-300">Escaneos QR/Mes</label>
-                        <span class="text-blue-400 font-bold" id="leads-val">500</span>
+                    <div class="flex justify-between mb-1">
+                        <label>Escaneos QR / Mes</label>
+                        <span class="font-bold text-blue-400" id="leads-val">500</span>
                     </div>
                     <input type="range" id="leads" min="50" max="5000" step="50" value="500" class="w-full">
                 </div>
                 <div>
-                    <div class="flex justify-between mb-2">
-                        <label class="text-slate-300">Meses de Operación</label>
-                        <span class="text-slate-200 font-bold" id="meses-val">12</span>
+                    <div class="flex justify-between mb-1">
+                        <label>Proyección (Meses)</label>
+                        <span class="font-bold text-slate-200" id="meses-val">12</span>
                     </div>
                     <input type="range" id="meses" min="1" max="24" step="1" value="12" class="w-full">
                 </div>
             </div>
 
-            <div class="space-y-6">
+            <div class="space-y-4">
+                <h3 class="text-emerald-500 font-bold uppercase text-[10px] tracking-widest">Precios de Propiedad</h3>
                 <div>
-                    <label class="block mb-2 text-slate-400">Precio Venta (COP)</label>
+                    <label class="block mb-1 text-slate-400">Precio Venta Promedio (COP)</label>
                     <input type="number" id="precioVenta" value="350000000" class="w-full p-2 rounded-lg input-dark outline-none focus:ring-1 focus:ring-emerald-500">
                 </div>
-                <div class="grid grid-cols-2 gap-2">
+                <div>
+                    <label class="block mb-1 text-slate-400">Canon Alquiler Mensual (COP)</label>
+                    <input type="number" id="precioAlquiler" value="2500000" class="w-full p-2 rounded-lg input-dark outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+            </div>
+
+            <div class="space-y-4 bg-slate-800/30 p-4 rounded-xl border border-slate-700/50">
+                <h3 class="text-emerald-500 font-bold uppercase text-[10px] tracking-widest">Tasas de Captación</h3>
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block mb-1 text-xs text-slate-500">Conv. Venta %</label>
-                        <input type="number" id="convVenta" value="1" step="0.1" class="w-full p-2 rounded-lg input-dark outline-none">
+                        <label class="block mb-1 text-[10px] text-slate-500">Conv. Venta %</label>
+                        <input type="number" id="convVenta" value="1" step="0.1" class="w-full p-2 rounded-lg input-dark text-xs">
+                        <label class="block mt-2 mb-1 text-[10px] text-emerald-500">Gano Venta %</label>
+                        <input type="number" id="tasaVenta" value="4.0" step="0.5" class="w-full p-2 rounded-lg input-dark text-xs">
                     </div>
                     <div>
-                        <label class="block mb-1 text-xs text-slate-500">Conv. Alquiler %</label>
-                        <input type="number" id="convAlquiler" value="4" step="0.1" class="w-full p-2 rounded-lg input-dark outline-none">
+                        <label class="block mb-1 text-[10px] text-slate-500">Conv. Alquiler %</label>
+                        <input type="number" id="convAlquiler" value="4" step="0.1" class="w-full p-2 rounded-lg input-dark text-xs">
+                        <label class="block mt-2 mb-1 text-[10px] text-blue-500">Gano Alquiler %</label>
+                        <input type="number" id="tasaAlquiler" value="0.5" step="0.1" class="w-full p-2 rounded-lg input-dark text-xs">
                     </div>
                 </div>
             </div>
 
-            <div class="space-y-6 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
-                <h3 class="text-xs font-bold uppercase text-slate-500 tracking-widest mb-2">Tasas de Comisión</h3>
-                <div>
-                    <div class="flex justify-between mb-2">
-                        <label class="text-emerald-400 font-semibold">Tasa Venta (%)</label>
-                        <span class="font-mono" id="val-tasa-v">4.0%</span>
-                    </div>
-                    <input type="range" id="tasaVenta" min="0.5" max="10" step="0.5" value="4" class="w-full">
-                </div>
-                <div>
-                    <div class="flex justify-between mb-2">
-                        <label class="text-blue-400 font-semibold">Tasa Alquiler (%)</label>
-                        <span class="font-mono" id="val-tasa-a">0.5%</span>
-                    </div>
-                    <input type="range" id="tasaAlquiler" min="0.1" max="5" step="0.1" value="0.5" class="w-full">
-                </div>
-            </div>
         </div>
     </div>
 
@@ -120,44 +110,43 @@
         }
 
         function update() {
-            // Captura de Inputs
             const leads = parseInt(document.getElementById('leads').value);
             const meses = parseInt(document.getElementById('meses').value);
+            
+            // PRECIOS INDEPENDIENTES
             const pVenta = parseFloat(document.getElementById('precioVenta').value);
+            const pAlquiler = parseFloat(document.getElementById('precioAlquiler').value);
+            
+            // CONVERSIONES
             const cVenta = parseFloat(document.getElementById('convVenta').value) / 100;
             const cAlquiler = parseFloat(document.getElementById('convAlquiler').value) / 100;
-            const pAlquiler = 2500000; // Valor base alquiler
 
-            // NUEVAS TASAS DINÁMICAS
+            // TASAS DE GANANCIA
             const tVenta = parseFloat(document.getElementById('tasaVenta').value) / 100;
             const tAlquiler = parseFloat(document.getElementById('tasaAlquiler').value) / 100;
 
-            // Actualizar Labels UI
             document.getElementById('leads-val').innerText = leads;
             document.getElementById('meses-val').innerText = meses;
-            document.getElementById('val-tasa-v').innerText = (tVenta * 100).toFixed(1) + '%';
-            document.getElementById('val-tasa-a').innerText = (tAlquiler * 100).toFixed(1) + '%';
-            document.getElementById('label-pct-v').innerText = (tVenta * 100).toFixed(1);
-            document.getElementById('label-pct-a').innerText = (tAlquiler * 100).toFixed(1);
 
-            // CÁLCULOS
-            const ingresoVentasCOP = (leads * cVenta) * pVenta * tVenta;
-            
-            const contratosNuevosMes = leads * cAlquiler;
-            const mrrFinalCOP = (contratosNuevosMes * meses) * pAlquiler * tAlquiler;
-            
+            // Lógica Ventas
+            const numVentas = leads * cVenta;
+            const ingresoVentasCOP = numVentas * pVenta * tVenta;
+
+            // Lógica Alquiler (MRR)
+            const numContratosNuevos = leads * cAlquiler;
+            const totalContratos = numContratosNuevos * meses;
+            const mrrFinalCOP = totalContratos * pAlquiler * tAlquiler;
+
+            // Utilidad
             const costosCOP = (50 + (leads * 0.005)) * TRM;
-
             const utilidadFinal = (ingresoVentasCOP + mrrFinalCOP) - costosCOP;
-            const margen = (utilidadFinal / (ingresoVentasCOP + mrrFinalCOP)) * 100;
 
-            // RENDER CARDS
+            // UI
             document.getElementById('roi-total-header').innerText = formatCOP(utilidadFinal);
-            document.getElementById('margen-header').innerText = margen.toFixed(1) + '%';
             document.getElementById('card-ventas-cop').innerText = formatCOP(ingresoVentasCOP);
-            document.getElementById('card-ventas-usd').innerText = `≈ $${Math.floor(ingresoVentasCOP/4100).toLocaleString()} USD`;
+            document.getElementById('card-ventas-count').innerText = `${numVentas.toFixed(1)} ventas este mes`;
             document.getElementById('card-mrr-cop').innerText = formatCOP(mrrFinalCOP);
-            document.getElementById('card-mrr-usd').innerText = `≈ $${Math.floor(mrrFinalCOP/4100).toLocaleString()} USD`;
+            document.getElementById('card-mrr-count').innerText = `${Math.floor(totalContratos)} inquilinos activos (Mes ${meses})`;
 
             updateChart(meses, leads, cVenta, pVenta, tVenta, cAlquiler, pAlquiler, tAlquiler, costosCOP);
         }
@@ -166,23 +155,20 @@
             const labels = Array.from({length: meses}, (_, i) => i + 1);
             const dataVentas = labels.map(() => (leads * cV) * pV * tV);
             const dataAlquiler = labels.map((m) => (leads * cA * m) * pA * tA);
-            const dataTotal = labels.map((m, i) => (dataVentas[i] + dataAlquiler[i]) - costos);
 
             if (chart) chart.destroy();
-            const ctx = document.getElementById('mainChart').getContext('2d');
-            chart = new Chart(ctx, {
+            chart = new Chart(document.getElementById('mainChart').getContext('2d'), {
                 type: 'line',
                 data: {
-                    labels: labels.map(m => 'M' + m),
+                    labels: labels.map(m => 'Mes ' + m),
                     datasets: [
-                        { label: 'Venta', data: dataVentas, borderColor: '#10b981', borderWidth: 2, pointRadius: 0, tension: 0.3 },
-                        { label: 'Alquiler (MRR)', data: dataAlquiler, borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0, tension: 0.3 },
-                        { label: 'Utilidad', data: dataTotal, borderColor: '#ffffff', borderWidth: 2, borderDash: [5, 5], pointRadius: 0 }
+                        { label: 'Ingreso Venta', data: dataVentas, borderColor: '#10b981', tension: 0.3, pointRadius: 0 },
+                        { label: 'Ingreso Alquiler (Acumulado)', data: dataAlquiler, borderColor: '#3b82f6', tension: 0.3, pointRadius: 0 }
                     ]
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: true, labels: { color: '#94a3b8', font: { size: 10 } } } },
+                    plugins: { legend: { labels: { color: '#94a3b8' } } },
                     scales: {
                         y: { grid: { color: '#334155' }, ticks: { color: '#64748b', callback: v => '$' + v/1e6 + 'M' } },
                         x: { grid: { display: false }, ticks: { color: '#64748b' } }
