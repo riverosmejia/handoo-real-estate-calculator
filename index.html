@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Handoo ROI - IA Inmobiliaria</title>
+    <title>Handoo ROI - Comisiones Dinámicas</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -11,131 +11,101 @@
         body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: white; }
         .card-bg { background-color: #1e293b; border: 1px solid #334155; }
         .input-dark { background-color: #0f172a; border: 1px solid #334155; color: white; }
-        input[type="range"] { accent-color: #3b82f6; }
+        input[type="range"] { accent-color: #3b82f6; cursor: pointer; }
     </style>
 </head>
 <body class="p-4 md:p-8 flex items-center justify-center min-h-screen">
 
-    <div class="max-w-4xl w-full card-bg rounded-3xl p-6 shadow-2xl">
+    <div class="max-w-5xl w-full card-bg rounded-3xl p-6 shadow-2xl border border-slate-700/50">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <h1 class="text-xl font-bold">Handoo: ROI de IA Inmobiliaria</h1>
+            <div>
+                <h1 class="text-2xl font-bold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">Handoo: ROI Configurable</h1>
+                <p class="text-xs text-slate-400">Ajusta las tasas de ganancia para cada modelo</p>
+            </div>
             <div class="flex gap-8 text-xs font-semibold uppercase tracking-wider text-slate-400">
                 <div class="text-center">
-                    <p>ROI TOTAL</p>
-                    <p class="text-white text-lg" id="roi-total-header">$ 0</p>
+                    <p>UTILIDAD TOTAL</p>
+                    <p class="text-emerald-400 text-xl font-bold" id="roi-total-header">$ 0</p>
                 </div>
                 <div class="text-center">
-                    <p>MRR ESTABILIZADO</p>
-                    <p class="text-white text-lg" id="mrr-header">$ 0</p>
-                </div>
-                <div class="text-center">
-                    <p>MARGEN</p>
-                    <p class="text-white text-lg" id="margen-header">0%</p>
+                    <p>MARGEN NETA</p>
+                    <p class="text-white text-xl font-bold" id="margen-header">0%</p>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div class="card-bg rounded-2xl p-6 relative overflow-hidden">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="p-2 bg-emerald-500/20 rounded-lg">
-                        <svg class="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
-                    </div>
-                    <span class="text-slate-400 text-sm">Ingreso por Ventas (Mes)</span>
-                </div>
+            <div class="card-bg rounded-2xl p-6 border-l-4 border-l-emerald-500 bg-slate-800/50">
+                <p class="text-slate-400 text-sm font-semibold mb-1">Ventas (Comisión <span id="label-pct-v">4</span>%)</p>
                 <div class="flex justify-between items-end">
                     <h2 class="text-2xl font-bold" id="card-ventas-cop">$ 0</h2>
                     <span class="text-slate-500 text-xs font-mono" id="card-ventas-usd">≈ $0 USD</span>
                 </div>
             </div>
 
-            <div class="card-bg rounded-2xl p-6">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="p-2 bg-blue-500/20 rounded-lg">
-                        <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <span class="text-slate-400 text-sm">MRR Alquileres (Mes <span class="mes-label">12</span>)</span>
-                </div>
+            <div class="card-bg rounded-2xl p-6 border-l-4 border-l-blue-500 bg-slate-800/50">
+                <p class="text-slate-400 text-sm font-semibold mb-1">Alquiler (MRR <span id="label-pct-a">0.5</span>%)</p>
                 <div class="flex justify-between items-end">
                     <h2 class="text-2xl font-bold" id="card-mrr-cop">$ 0</h2>
                     <span class="text-slate-500 text-xs font-mono" id="card-mrr-usd">≈ $0 USD</span>
                 </div>
             </div>
-
-            <div class="card-bg rounded-2xl p-6">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="p-2 bg-rose-500/20 rounded-lg">
-                        <svg class="w-6 h-6 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                    </div>
-                    <span class="text-slate-400 text-sm">Costos Operativos</span>
-                </div>
-                <div class="flex justify-between items-end">
-                    <h2 class="text-2xl font-bold text-slate-200" id="card-costos-cop">$ 0</h2>
-                    <span class="text-slate-500 text-xs font-mono" id="card-costos-usd">≈ $0 USD</span>
-                </div>
-            </div>
-
-            <div class="card-bg rounded-2xl p-6">
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="p-2 bg-emerald-500/20 rounded-lg">
-                        <svg class="w-6 h-6 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                    </div>
-                    <span class="text-slate-400 text-sm">Ganancia Neta Estimada</span>
-                </div>
-                <div class="flex justify-between items-end">
-                    <h2 class="text-2xl font-bold text-emerald-400" id="card-ganancia-cop">$ 0</h2>
-                    <span class="text-slate-500 text-xs font-mono" id="card-ganancia-usd">≈ $0 USD</span>
-                </div>
-            </div>
         </div>
 
         <div class="mb-8 p-4 bg-slate-900/50 rounded-2xl border border-slate-800">
-            <canvas id="mainChart" height="120"></canvas>
+            <canvas id="mainChart" height="100"></canvas>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-sm">
-            <div class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
+            <div class="space-y-6">
                 <div>
                     <div class="flex justify-between mb-2">
-                        <label>Leads (Escaneos QR/Mes)</label>
-                        <span class="input-dark px-2 rounded" id="leads-val">500</span>
+                        <label class="text-slate-300">Escaneos QR/Mes</label>
+                        <span class="text-blue-400 font-bold" id="leads-val">500</span>
                     </div>
                     <input type="range" id="leads" min="50" max="5000" step="50" value="500" class="w-full">
                 </div>
                 <div>
-                    <label class="block mb-2">Precio Prom. Venta (COP)</label>
-                    <input type="number" id="precioVenta" value="350000000" class="w-full p-2 rounded-lg input-dark outline-none focus:ring-1 focus:ring-blue-500">
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="block mb-2">Precio Prom. Alquiler (COP)</label>
-                    <input type="number" id="precioAlquiler" value="2500000" class="w-full p-2 rounded-lg input-dark outline-none focus:ring-1 focus:ring-blue-500">
-                </div>
-                <div>
                     <div class="flex justify-between mb-2">
-                        <label>Conv. Venta (%)</label>
-                        <span class="input-dark px-2 rounded" id="cv-val">1</span>
-                    </div>
-                    <input type="range" id="convVenta" min="0.1" max="10" step="0.1" value="1" class="w-full">
-                </div>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <div class="flex justify-between mb-2">
-                        <label>Conv. Alquiler (%)</label>
-                        <span class="input-dark px-2 rounded" id="ca-val">4</span>
-                    </div>
-                    <input type="range" id="convAlquiler" min="0.1" max="20" step="0.1" value="4" class="w-full">
-                </div>
-                <div>
-                    <div class="flex justify-between mb-2">
-                        <label>Meses de Operación</label>
-                        <span class="input-dark px-2 rounded" id="meses-val">12</span>
+                        <label class="text-slate-300">Meses de Operación</label>
+                        <span class="text-slate-200 font-bold" id="meses-val">12</span>
                     </div>
                     <input type="range" id="meses" min="1" max="24" step="1" value="12" class="w-full">
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div>
+                    <label class="block mb-2 text-slate-400">Precio Venta (COP)</label>
+                    <input type="number" id="precioVenta" value="350000000" class="w-full p-2 rounded-lg input-dark outline-none focus:ring-1 focus:ring-emerald-500">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block mb-1 text-xs text-slate-500">Conv. Venta %</label>
+                        <input type="number" id="convVenta" value="1" step="0.1" class="w-full p-2 rounded-lg input-dark outline-none">
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-xs text-slate-500">Conv. Alquiler %</label>
+                        <input type="number" id="convAlquiler" value="4" step="0.1" class="w-full p-2 rounded-lg input-dark outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6 p-4 bg-slate-800/30 rounded-xl border border-slate-700/50">
+                <h3 class="text-xs font-bold uppercase text-slate-500 tracking-widest mb-2">Tasas de Comisión</h3>
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label class="text-emerald-400 font-semibold">Tasa Venta (%)</label>
+                        <span class="font-mono" id="val-tasa-v">4.0%</span>
+                    </div>
+                    <input type="range" id="tasaVenta" min="0.5" max="10" step="0.5" value="4" class="w-full">
+                </div>
+                <div>
+                    <div class="flex justify-between mb-2">
+                        <label class="text-blue-400 font-semibold">Tasa Alquiler (%)</label>
+                        <span class="font-mono" id="val-tasa-a">0.5%</span>
+                    </div>
+                    <input type="range" id="tasaAlquiler" min="0.1" max="5" step="0.1" value="0.5" class="w-full">
                 </div>
             </div>
         </div>
@@ -150,76 +120,72 @@
         }
 
         function update() {
+            // Captura de Inputs
             const leads = parseInt(document.getElementById('leads').value);
+            const meses = parseInt(document.getElementById('meses').value);
             const pVenta = parseFloat(document.getElementById('precioVenta').value);
-            const pAlquiler = parseFloat(document.getElementById('precioAlquiler').value);
             const cVenta = parseFloat(document.getElementById('convVenta').value) / 100;
             const cAlquiler = parseFloat(document.getElementById('convAlquiler').value) / 100;
-            const meses = parseInt(document.getElementById('meses').value);
+            const pAlquiler = 2500000; // Valor base alquiler
 
+            // NUEVAS TASAS DINÁMICAS
+            const tVenta = parseFloat(document.getElementById('tasaVenta').value) / 100;
+            const tAlquiler = parseFloat(document.getElementById('tasaAlquiler').value) / 100;
+
+            // Actualizar Labels UI
             document.getElementById('leads-val').innerText = leads;
-            document.getElementById('cv-val').innerText = (cVenta * 100).toFixed(1);
-            document.getElementById('ca-val').innerText = (cAlquiler * 100).toFixed(1);
             document.getElementById('meses-val').innerText = meses;
-            document.querySelectorAll('.mes-label').forEach(el => el.innerText = meses);
+            document.getElementById('val-tasa-v').innerText = (tVenta * 100).toFixed(1) + '%';
+            document.getElementById('val-tasa-a').innerText = (tAlquiler * 100).toFixed(1) + '%';
+            document.getElementById('label-pct-v').innerText = (tVenta * 100).toFixed(1);
+            document.getElementById('label-pct-a').innerText = (tAlquiler * 100).toFixed(1);
 
-            // CÁLCULOS (Según modelo de la foto)
-            const ingresoVentasMes = leads * cVenta * pVenta * 0.03; // 3% Comisión
-            const contratosNuevosMes = leads * cAlquiler;
-            const mrrFinal = (contratosNuevosMes * meses) * pAlquiler * 0.05; // 5% Comisión Mensual
+            // CÁLCULOS
+            const ingresoVentasCOP = (leads * cVenta) * pVenta * tVenta;
             
-            const costosFijosUSD = 50; 
-            const costoIA_USD = leads * 0.005;
-            const costosTotalesCOP = (costosFijosUSD + costoIA_USD) * TRM;
+            const contratosNuevosMes = leads * cAlquiler;
+            const mrrFinalCOP = (contratosNuevosMes * meses) * pAlquiler * tAlquiler;
+            
+            const costosCOP = (50 + (leads * 0.005)) * TRM;
 
-            const gananciaNeta = (ingresoVentasMes + mrrFinal) - costosTotalesCOP;
-            const margen = (gananciaNeta / (ingresoVentasMes + mrrFinal)) * 100;
+            const utilidadFinal = (ingresoVentasCOP + mrrFinalCOP) - costosCOP;
+            const margen = (utilidadFinal / (ingresoVentasCOP + mrrFinalCOP)) * 100;
 
             // RENDER CARDS
-            document.getElementById('roi-total-header').innerText = formatCOP(gananciaNeta);
-            document.getElementById('mrr-header').innerText = formatCOP(mrrFinal);
+            document.getElementById('roi-total-header').innerText = formatCOP(utilidadFinal);
             document.getElementById('margen-header').innerText = margen.toFixed(1) + '%';
+            document.getElementById('card-ventas-cop').innerText = formatCOP(ingresoVentasCOP);
+            document.getElementById('card-ventas-usd').innerText = `≈ $${Math.floor(ingresoVentasCOP/4100).toLocaleString()} USD`;
+            document.getElementById('card-mrr-cop').innerText = formatCOP(mrrFinalCOP);
+            document.getElementById('card-mrr-usd').innerText = `≈ $${Math.floor(mrrFinalCOP/4100).toLocaleString()} USD`;
 
-            document.getElementById('card-ventas-cop').innerText = formatCOP(ingresoVentasMes);
-            document.getElementById('card-ventas-usd').innerText = `≈ $${Math.floor(ingresoVentasMes/TRM).toLocaleString()} USD`;
-            
-            document.getElementById('card-mrr-cop').innerText = formatCOP(mrrFinal);
-            document.getElementById('card-mrr-usd').innerText = `≈ $${Math.floor(mrrFinal/TRM).toLocaleString()} USD`;
-
-            document.getElementById('card-costos-cop').innerText = formatCOP(costosTotalesCOP);
-            document.getElementById('card-costos-usd').innerText = `≈ $${Math.floor(costosTotalesCOP/TRM).toLocaleString()} USD`;
-
-            document.getElementById('card-ganancia-cop').innerText = formatCOP(gananciaNeta);
-            document.getElementById('card-ganancia-usd').innerText = `≈ $${Math.floor(gananciaNeta/TRM).toLocaleString()} USD`;
-
-            updateChart(meses, leads, cVenta, pVenta, cAlquiler, pAlquiler, costosTotalesCOP);
+            updateChart(meses, leads, cVenta, pVenta, tVenta, cAlquiler, pAlquiler, tAlquiler, costosCOP);
         }
 
-        function updateChart(meses, leads, cVenta, pVenta, cAlquiler, pAlquiler, costos) {
+        function updateChart(meses, leads, cV, pV, tV, cA, pA, tA, costos) {
             const labels = Array.from({length: meses}, (_, i) => i + 1);
-            const dataVentas = labels.map(() => leads * cVenta * pVenta * 0.03);
-            const dataAlquiler = labels.map((m) => (leads * cAlquiler * m) * pAlquiler * 0.05);
-            const dataNeto = labels.map((m, i) => (dataVentas[i] + dataAlquiler[i]) - costos);
+            const dataVentas = labels.map(() => (leads * cV) * pV * tV);
+            const dataAlquiler = labels.map((m) => (leads * cA * m) * pA * tA);
+            const dataTotal = labels.map((m, i) => (dataVentas[i] + dataAlquiler[i]) - costos);
 
             if (chart) chart.destroy();
-
             const ctx = document.getElementById('mainChart').getContext('2d');
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels.map(m => 'Mes ' + m),
+                    labels: labels.map(m => 'M' + m),
                     datasets: [
-                        { label: 'Ventas (Mensual)', data: dataVentas, borderColor: '#10b981', borderWidth: 2, pointRadius: 0, tension: 0.1 },
-                        { label: 'MRR Alquiler (Acumulado)', data: dataAlquiler, borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0, tension: 0.1 },
-                        { label: 'Ganancia Neta', data: dataNeto, borderColor: '#a7f3d0', borderWidth: 3, pointRadius: 0, tension: 0.1 }
+                        { label: 'Venta', data: dataVentas, borderColor: '#10b981', borderWidth: 2, pointRadius: 0, tension: 0.3 },
+                        { label: 'Alquiler (MRR)', data: dataAlquiler, borderColor: '#3b82f6', borderWidth: 2, pointRadius: 0, tension: 0.3 },
+                        { label: 'Utilidad', data: dataTotal, borderColor: '#ffffff', borderWidth: 2, borderDash: [5, 5], pointRadius: 0 }
                     ]
                 },
                 options: {
                     responsive: true,
-                    plugins: { legend: { display: true, labels: { color: '#94a3b8', boxWidth: 10, font: { size: 10 } } } },
+                    plugins: { legend: { display: true, labels: { color: '#94a3b8', font: { size: 10 } } } },
                     scales: {
-                        y: { grid: { color: '#334155' }, ticks: { color: '#64748b', font: { size: 10 }, callback: v => '$' + v/1e6 + 'M' } },
-                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 10 } } }
+                        y: { grid: { color: '#334155' }, ticks: { color: '#64748b', callback: v => '$' + v/1e6 + 'M' } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b' } }
                     }
                 }
             });
